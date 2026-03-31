@@ -1,4 +1,4 @@
-import type { DayOfWeek, GradeLevel, MilestoneType } from '@/lib/types';
+import type { DayOfWeek, GradeLevel, MilestoneType, SoundType, RepeatType, AlarmDayOfWeek } from '@/lib/types';
 
 // === Storage Keys ===
 
@@ -9,7 +9,43 @@ export const STORAGE_KEYS = {
   MILESTONES: 'mykeep_milestones',
   SUPPLIES: 'mykeep_supplies',
   DAILY_CHECKS: 'mykeep_daily_checks',
+  ALARMS: 'mykeep_alarms',
 } as const;
+
+// === Alarm Sound Labels ===
+
+export const SOUND_LABELS: Record<SoundType, string> = {
+  classic: '클래식벨',
+  digital: '디지털',
+  bird: '새소리',
+  piano: '피아노',
+};
+
+// === Alarm Repeat Labels ===
+
+export const REPEAT_LABELS: Record<RepeatType, string> = {
+  once: '한 번만',
+  daily: '매일',
+  weekdays: '평일',
+  weekends: '주말',
+  custom: '직접 선택',
+};
+
+// === Alarm Day Labels ===
+
+export const ALARM_DAY_LABELS: Record<AlarmDayOfWeek, string> = {
+  mon: '월', tue: '화', wed: '수', thu: '목', fri: '금', sat: '토', sun: '일',
+};
+
+// === Alarm Presets ===
+
+export const ALARM_PRESETS: { name: string; hour: number; minute: number; repeatType: RepeatType; emoji: string }[] = [
+  { name: '기상 알람',   hour: 7,  minute: 0,  repeatType: 'weekdays', emoji: '🌅' },
+  { name: '등교 준비',   hour: 7,  minute: 40, repeatType: 'weekdays', emoji: '🚌' },
+  { name: '자습 시작',   hour: 16, minute: 0,  repeatType: 'weekdays', emoji: '📚' },
+  { name: '쉬는 시간',   hour: 17, minute: 0,  repeatType: 'daily',    emoji: '☕' },
+  { name: '취침 준비',   hour: 23, minute: 0,  repeatType: 'daily',    emoji: '🌙' },
+];
 
 // === Subject Default Colors ===
 

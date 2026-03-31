@@ -12,6 +12,7 @@ interface PageHeaderProps {
   showSettings?: boolean;
   showThemeToggle?: boolean;
   rightAction?: React.ReactNode;
+  titleClassName?: string;
 }
 
 export function PageHeader({
@@ -19,6 +20,7 @@ export function PageHeader({
   showSettings = false,
   showThemeToggle = false,
   rightAction,
+  titleClassName,
 }: PageHeaderProps) {
   const { profile, toggleTheme } = useProfileStore();
   const { currentUser, logout } = useAuthStore();
@@ -32,7 +34,7 @@ export function PageHeader({
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--bg-primary)]/95 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-lg items-center justify-between px-4">
-        <h1 className="text-lg font-bold text-[var(--text-primary)]">{title}</h1>
+        <h1 className={cn('text-lg font-bold text-[var(--text-primary)]', titleClassName)}>{title}</h1>
         <div className="flex items-center gap-2">
           {currentUser && (
             <span className="text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-secondary)] rounded-full px-2 py-0.5">

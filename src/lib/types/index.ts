@@ -74,6 +74,26 @@ export interface SupplyItem {
   updatedAt: string;
 }
 
+// === Alarm ===
+
+export type SoundType = 'classic' | 'digital' | 'bird' | 'piano';
+export type RepeatType = 'once' | 'daily' | 'weekdays' | 'weekends' | 'custom';
+export type AlarmDayOfWeek = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
+
+export interface Alarm {
+  id: string;
+  name: string;
+  hour: number;
+  minute: number;
+  repeatType: RepeatType;
+  repeatDays: AlarmDayOfWeek[];
+  soundType: SoundType;
+  volume: number;
+  isEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // === Daily Supply Check ===
 
 export interface DailySupplyCheck {

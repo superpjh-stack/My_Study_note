@@ -5,6 +5,8 @@ import { Backpack, Plus } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckItem } from '@/components/shared/CheckItem';
+import { SparkleCheckItem } from '@/components/seasonal/SparkleCheckItem';
+import { useSeasonTheme } from '@/lib/hooks/useSeasonTheme';
 import { SubjectBadge } from '@/components/shared/SubjectBadge';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { SupplyForm } from './SupplyForm';
@@ -15,6 +17,7 @@ import { getTodayDayOfWeek, formatDateKorean } from '@/lib/utils/date';
 
 export function DailyChecklist() {
   const [showForm, setShowForm] = useState(false);
+  const { isActive: isSeasonActive } = useSeasonTheme();
   const today = getTodayDayOfWeek();
   const todaySlots = useScheduleStore((s) => (today ? s.getSlotsByDay(today) : []));
   const subjects = useSubjectStore((s) => s.subjects);
@@ -54,7 +57,7 @@ export function DailyChecklist() {
           <div className="mt-2 flex items-center gap-2">
             <div className="flex-1 h-2.5 rounded-full bg-[var(--bg-tertiary)] overflow-hidden">
               <div
-                className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                className={`h-full rounded-full transition-all duration-500 ${isSeasonActive ? 'progress-bar-blossom' : 'bg-emerald-500'}`}
                 style={{
                   width: `${(checkedCount / allSupplyItems.length) * 100}%`,
                 }}
@@ -85,15 +88,25 @@ export function DailyChecklist() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-0.5">
-                  {group.items.map((item) => (
-                    <CheckItem
-                      key={item.id}
-                      label={item.name}
-                      checked={isChecked(item.id)}
-                      onChange={() => toggleCheck(item.id)}
-                      subjectColor={group.subject!.color}
-                    />
-                  ))}
+                  {group.items.map((item) =>
+                    isSeasonActive ? (
+                      <SparkleCheckItem
+                        key={item.id}
+                        label={item.name}
+                        checked={isChecked(item.id)}
+                        onChange={() => toggleCheck(item.id)}
+                        subjectColor={group.subject!.color}
+                      />
+                    ) : (
+                      <CheckItem
+                        key={item.id}
+                        label={item.name}
+                        checked={isChecked(item.id)}
+                        onChange={() => toggleCheck(item.id)}
+                        subjectColor={group.subject!.color}
+                      />
+                    )
+                  )}
                 </div>
               </CardContent>
             </Card>

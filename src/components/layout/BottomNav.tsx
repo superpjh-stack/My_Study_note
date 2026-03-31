@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Calendar, Target, Backpack } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
+import { useSeasonTheme } from '@/lib/hooks/useSeasonTheme';
 
 const NAV_ITEMS = [
   { href: '/', label: '홈', icon: Home },
@@ -14,6 +15,7 @@ const NAV_ITEMS = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { isActive: isSeasonActive } = useSeasonTheme();
 
   if (pathname === '/login') return null;
 
@@ -37,7 +39,10 @@ export function BottomNav() {
             >
               <Icon
                 size={22}
-                className={cn(isActive && 'fill-primary/20')}
+                className={cn(
+                  isActive && 'fill-primary/20',
+                  isActive && isSeasonActive && 'nav-active-blossom'
+                )}
                 strokeWidth={isActive ? 2.5 : 1.5}
               />
               <span>{item.label}</span>

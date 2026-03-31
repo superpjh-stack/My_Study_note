@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { AuthGuard } from '@/components/layout/AuthGuard';
+import { AlarmRinging } from '@/components/clock/AlarmRinging';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default function RootLayout({
           <AuthGuard>
             <main className="mx-auto max-w-lg pb-safe">{children}</main>
             <BottomNav />
+            <AlarmRinging />
           </AuthGuard>
         </ThemeProvider>
       </body>

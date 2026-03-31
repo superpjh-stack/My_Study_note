@@ -6,11 +6,13 @@ import { useProfileStore } from '@/lib/store/useProfileStore';
 import { useSubjectStore } from '@/lib/store/useSubjectStore';
 import { GRADE_LABELS } from '@/lib/constants';
 import type { GradeLevel, Semester } from '@/lib/types';
-import { Moon, Sun, User, BookOpen, Database, Info } from 'lucide-react';
+import { Moon, Sun, User, BookOpen, Database, Info, Sparkles } from 'lucide-react';
+import { useSeasonTheme } from '@/lib/hooks/useSeasonTheme';
 
 export default function SettingsPage() {
   const { profile, setGrade, setSemester, toggleTheme } = useProfileStore();
   const subjects = useSubjectStore((s) => s.subjects);
+  const { isAprilSeason, enabled: seasonEnabled, toggle: toggleSeason } = useSeasonTheme();
 
   const gradeOptions = Object.entries(GRADE_LABELS) as [GradeLevel, string][];
 
@@ -79,6 +81,34 @@ export default function SettingsPage() {
               {profile.theme === 'light' ? '라이트 모드' : '다크 모드'}
             </span>
           </button>
+
+          {isAprilSeason && (
+            <div className="mt-2 rounded-md bg-[var(--bg-secondary)] px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles size={14} className="text-pink-400" />
+                    <span className="text-sm font-medium">🌸 시즌 테마</span>
+                  </div>
+                  <p className="mt-0.5 text-xs text-[var(--text-muted)]">4월 벚꽃 블링블링 모드</p>
+                </div>
+                <button
+                  onClick={toggleSeason}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    seasonEnabled ? 'bg-pink-400' : 'bg-[var(--border)]'
+                  }`}
+                  role="switch"
+                  aria-checked={seasonEnabled}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${
+                      seasonEnabled ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+          )}
         </Card>
 
         {/* Subjects */}

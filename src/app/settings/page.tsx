@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Card } from '@/components/ui/card';
 import { useProfileStore } from '@/lib/store/useProfileStore';
 import { useSubjectStore } from '@/lib/store/useSubjectStore';
-import { GRADE_LABELS } from '@/lib/constants';
+import { GRADE_LABELS, STORAGE_KEYS } from '@/lib/constants';
 import type { GradeLevel, Semester } from '@/lib/types';
-import { Moon, Sun, User, BookOpen, Database, Info, Sparkles, Check } from 'lucide-react';
+import { Moon, Sun, User, BookOpen, Database, Info, Sparkles, Check, Download, Upload } from 'lucide-react';
 import { useSeasonTheme } from '@/lib/hooks/useSeasonTheme';
 
 export default function SettingsPage() {
@@ -18,6 +18,8 @@ export default function SettingsPage() {
   const [draftGrade, setDraftGrade] = useState<GradeLevel>(profile.grade);
   const [draftSemester, setDraftSemester] = useState<Semester>(profile.semester);
   const [saved, setSaved] = useState(false);
+  const [importStatus, setImportStatus] = useState<'idle' | 'ok' | 'error'>('idle');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isDirty = draftGrade !== profile.grade || draftSemester !== profile.semester;
 
@@ -26,6 +28,44 @@ export default function SettingsPage() {
     setSemester(draftSemester);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleExport = () => {
+    const data: Record<string, unknown> = { exportedAt: new Date().toISOString() };
+    Object.values(STORAGE_KEYS).forEach((key) => {
+      const val = localStorage.getItem(key);
+      if (val) data[key] = JSON.parse(val);
+    });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mykeep-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target?.result as string) as Record<string, unknown>;
+        Object.values(STORAGE_KEYS).forEach((key) => {
+          if (data[key] !== undefined) {
+            localStorage.setItem(key, JSON.stringify(data[key]));
+          }
+        });
+        setImportStatus('ok');
+        setTimeout(() => window.location.reload(), 800);
+      } catch {
+        setImportStatus('error');
+        setTimeout(() => setImportStatus('idle'), 3000);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
   };
 
   const gradeOptions = Object.entries(GRADE_LABELS) as [GradeLevel, string][];
@@ -174,19 +214,59 @@ export default function SettingsPage() {
         <Card>
           <div className="flex items-center gap-2 mb-3">
             <Database size={18} className="text-primary" />
-            <h3 className="text-base font-semibold">데이터</h3>
+            <h3 className="text-base font-semibold">데이터 이전</h3>
           </div>
-          <button
-            onClick={() => {
-              if (confirm('모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-                localStorage.clear();
-                window.location.reload();
-              }
-            }}
-            className="w-full rounded-md bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-500/20 transition-colors"
-          >
-            데이터 초기화
-          </button>
+          <div className="space-y-2">
+            {/* Export */}
+            <button
+              onClick={handleExport}
+              className="w-full flex items-center gap-3 rounded-md bg-[var(--bg-secondary)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
+            >
+              <Download size={16} className="text-primary shrink-0" />
+              <div className="text-left">
+                <p className="font-medium">데이터 내보내기</p>
+                <p className="text-xs text-[var(--text-muted)]">PC → 파일 저장 후 모바일에서 가져오기</p>
+              </div>
+            </button>
+
+            {/* Import */}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className={`w-full flex items-center gap-3 rounded-md px-4 py-3 text-sm font-medium transition-colors ${
+                importStatus === 'ok'
+                  ? 'bg-green-500/10 text-green-600'
+                  : importStatus === 'error'
+                  ? 'bg-red-500/10 text-red-500'
+                  : 'bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]'
+              }`}
+            >
+              {importStatus === 'ok' ? (
+                <Check size={16} className="text-green-500 shrink-0" />
+              ) : (
+                <Upload size={16} className="text-primary shrink-0" />
+              )}
+              <div className="text-left">
+                <p className="font-medium">
+                  {importStatus === 'ok' ? '가져오기 완료! 재시작 중...' : importStatus === 'error' ? '파일 오류 — 다시 시도해 주세요' : '데이터 가져오기'}
+                </p>
+                <p className="text-xs text-[var(--text-muted)]">백업 파일(.json)을 선택하면 자동 적용</p>
+              </div>
+            </button>
+            <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
+
+            {/* Reset */}
+            <button
+              onClick={() => {
+                if (confirm('모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                  localStorage.clear();
+                  window.location.reload();
+                }
+              }}
+              className="w-full rounded-md bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-500/20 transition-colors"
+            >
+              데이터 초기화
+            </button>
+          </div>
         </Card>
 
         {/* App Info */}

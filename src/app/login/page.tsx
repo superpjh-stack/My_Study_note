@@ -5,15 +5,17 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore, QUICK_LOGIN_USERS, type AuthUser } from '@/lib/store/useAuthStore';
 
 const ROLE_LABEL: Record<AuthUser['role'], string> = {
-  'student-high': '고등학생',
+  'student-high':   '고등학생',
   'student-middle': '중학생',
-  admin: '관리자',
+  'graduate':       '대학원생',
+  admin:            '관리자',
 };
 
 const ROLE_BG: Record<AuthUser['role'], string> = {
-  'student-high': 'from-indigo-500 to-violet-500',
+  'student-high':   'from-indigo-500 to-violet-500',
   'student-middle': 'from-sky-500 to-cyan-500',
-  admin: 'from-rose-500 to-orange-500',
+  'graduate':       'from-amber-500 to-pink-500',
+  admin:            'from-rose-500 to-orange-500',
 };
 
 export default function LoginPage() {

@@ -3,7 +3,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type UserRole = 'student-high' | 'student-middle' | 'admin';
+export type UserRole = 'student-high' | 'student-middle' | 'graduate' | 'admin';
 
 export interface AuthUser {
   name: string;
@@ -15,8 +15,8 @@ export interface AuthUser {
 export const QUICK_LOGIN_USERS: AuthUser[] = [
   { name: 'Joeun',   role: 'student-high',   emoji: '🎓', avatar: '/avatars/joeun.svg'   },
   { name: 'Junho',   role: 'student-middle',  emoji: '📚', avatar: '/avatars/junho.svg'   },
-  { name: 'Gerardo', role: 'student-high',    emoji: '🌟', avatar: '/avatars/gerardo.svg' },
-  { name: 'Grace',   role: 'student-high',    emoji: '🌸', avatar: '/avatars/grace.svg'   },
+  { name: 'Gerardo', role: 'graduate',         emoji: '🌟', avatar: '/avatars/gerardo.svg' },
+  { name: 'Grace',   role: 'graduate',         emoji: '🌸', avatar: '/avatars/grace.svg'   },
   { name: 'admin',   role: 'admin',           emoji: '🛠️', avatar: '/avatars/admin.svg'   },
 ];
 

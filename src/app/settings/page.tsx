@@ -1,18 +1,32 @@
 'use client';
 
+import { useState } from 'react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Card } from '@/components/ui/card';
 import { useProfileStore } from '@/lib/store/useProfileStore';
 import { useSubjectStore } from '@/lib/store/useSubjectStore';
 import { GRADE_LABELS } from '@/lib/constants';
 import type { GradeLevel, Semester } from '@/lib/types';
-import { Moon, Sun, User, BookOpen, Database, Info, Sparkles } from 'lucide-react';
+import { Moon, Sun, User, BookOpen, Database, Info, Sparkles, Check } from 'lucide-react';
 import { useSeasonTheme } from '@/lib/hooks/useSeasonTheme';
 
 export default function SettingsPage() {
   const { profile, setGrade, setSemester, toggleTheme } = useProfileStore();
   const subjects = useSubjectStore((s) => s.subjects);
   const { isAprilSeason, enabled: seasonEnabled, toggle: toggleSeason } = useSeasonTheme();
+
+  const [draftGrade, setDraftGrade] = useState<GradeLevel>(profile.grade);
+  const [draftSemester, setDraftSemester] = useState<Semester>(profile.semester);
+  const [saved, setSaved] = useState(false);
+
+  const isDirty = draftGrade !== profile.grade || draftSemester !== profile.semester;
+
+  const handleSave = () => {
+    setGrade(draftGrade);
+    setSemester(draftSemester);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
 
   const gradeOptions = Object.entries(GRADE_LABELS) as [GradeLevel, string][];
 
@@ -30,8 +44,8 @@ export default function SettingsPage() {
             <div>
               <label className="block text-sm text-[var(--text-secondary)] mb-1">학년</label>
               <select
-                value={profile.grade}
-                onChange={(e) => setGrade(e.target.value as GradeLevel)}
+                value={draftGrade}
+                onChange={(e) => setDraftGrade(e.target.value as GradeLevel)}
                 className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)]"
               >
                 {gradeOptions.map(([key, label]) => (
@@ -47,9 +61,9 @@ export default function SettingsPage() {
                 {(['1', '2'] as Semester[]).map((sem) => (
                   <button
                     key={sem}
-                    onClick={() => setSemester(sem)}
+                    onClick={() => setDraftSemester(sem)}
                     className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-                      profile.semester === sem
+                      draftSemester === sem
                         ? 'bg-primary text-white'
                         : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)]'
                     }`}
@@ -59,6 +73,26 @@ export default function SettingsPage() {
                 ))}
               </div>
             </div>
+            <button
+              onClick={handleSave}
+              disabled={!isDirty && !saved}
+              className={`w-full flex items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold transition-all ${
+                saved
+                  ? 'bg-green-500 text-white'
+                  : isDirty
+                  ? 'bg-primary text-white hover:opacity-90 active:scale-95'
+                  : 'bg-[var(--bg-secondary)] text-[var(--text-muted)] cursor-not-allowed'
+              }`}
+            >
+              {saved ? (
+                <>
+                  <Check size={15} />
+                  저장됨
+                </>
+              ) : (
+                '저장'
+              )}
+            </button>
           </div>
         </Card>
 

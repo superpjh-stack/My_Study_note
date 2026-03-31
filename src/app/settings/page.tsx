@@ -1,0 +1,142 @@
+'use client';
+
+import { PageHeader } from '@/components/layout/PageHeader';
+import { Card } from '@/components/ui/card';
+import { useProfileStore } from '@/lib/store/useProfileStore';
+import { useSubjectStore } from '@/lib/store/useSubjectStore';
+import { GRADE_LABELS } from '@/lib/constants';
+import type { GradeLevel, Semester } from '@/lib/types';
+import { Moon, Sun, User, BookOpen, Database, Info } from 'lucide-react';
+
+export default function SettingsPage() {
+  const { profile, setGrade, setSemester, toggleTheme } = useProfileStore();
+  const subjects = useSubjectStore((s) => s.subjects);
+
+  const gradeOptions = Object.entries(GRADE_LABELS) as [GradeLevel, string][];
+
+  return (
+    <div>
+      <PageHeader title="설정" />
+      <div className="space-y-4 px-4 py-4">
+        {/* Profile */}
+        <Card>
+          <div className="flex items-center gap-2 mb-3">
+            <User size={18} className="text-primary" />
+            <h3 className="text-base font-semibold">프로필</h3>
+          </div>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm text-[var(--text-secondary)] mb-1">학년</label>
+              <select
+                value={profile.grade}
+                onChange={(e) => setGrade(e.target.value as GradeLevel)}
+                className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)]"
+              >
+                {gradeOptions.map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm text-[var(--text-secondary)] mb-1">학기</label>
+              <div className="flex gap-2">
+                {(['1', '2'] as Semester[]).map((sem) => (
+                  <button
+                    key={sem}
+                    onClick={() => setSemester(sem)}
+                    className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+                      profile.semester === sem
+                        ? 'bg-primary text-white'
+                        : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)]'
+                    }`}
+                  >
+                    {sem}학기
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Appearance */}
+        <Card>
+          <div className="flex items-center gap-2 mb-3">
+            {profile.theme === 'dark' ? (
+              <Moon size={18} className="text-primary" />
+            ) : (
+              <Sun size={18} className="text-primary" />
+            )}
+            <h3 className="text-base font-semibold">외관</h3>
+          </div>
+          <button
+            onClick={toggleTheme}
+            className="w-full flex items-center justify-between rounded-md bg-[var(--bg-secondary)] px-4 py-3"
+          >
+            <span className="text-sm">테마</span>
+            <span className="text-sm text-[var(--text-secondary)]">
+              {profile.theme === 'light' ? '라이트 모드' : '다크 모드'}
+            </span>
+          </button>
+        </Card>
+
+        {/* Subjects */}
+        <Card>
+          <div className="flex items-center gap-2 mb-3">
+            <BookOpen size={18} className="text-primary" />
+            <h3 className="text-base font-semibold">과목 관리</h3>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {subjects.map((subject) => (
+              <span
+                key={subject.id}
+                className="rounded-full px-3 py-1 text-xs font-medium"
+                style={{
+                  backgroundColor: `${subject.color}15`,
+                  color: subject.color,
+                }}
+              >
+                {subject.name}
+              </span>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-[var(--text-muted)]">
+            과목은 기본 프리셋으로 자동 생성됩니다
+          </p>
+        </Card>
+
+        {/* Data */}
+        <Card>
+          <div className="flex items-center gap-2 mb-3">
+            <Database size={18} className="text-primary" />
+            <h3 className="text-base font-semibold">데이터</h3>
+          </div>
+          <button
+            onClick={() => {
+              if (confirm('모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                localStorage.clear();
+                window.location.reload();
+              }
+            }}
+            className="w-full rounded-md bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-500/20 transition-colors"
+          >
+            데이터 초기화
+          </button>
+        </Card>
+
+        {/* App Info */}
+        <Card>
+          <div className="flex items-center gap-2 mb-3">
+            <Info size={18} className="text-primary" />
+            <h3 className="text-base font-semibold">앱 정보</h3>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-[var(--text-secondary)]">버전</span>
+            <span className="text-[var(--text-muted)]">v0.1.0</span>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}

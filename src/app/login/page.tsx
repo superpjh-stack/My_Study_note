@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuthStore, QUICK_LOGIN_USERS, type AuthUser } from '@/lib/store/useAuthStore';
 
@@ -45,8 +46,8 @@ export default function LoginPage() {
           >
             <div className={`bg-gradient-to-r ${ROLE_BG[user.role]} p-px`}>
               <div className="flex items-center gap-4 rounded-2xl bg-[var(--bg-secondary)] px-5 py-4">
-                <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${ROLE_BG[user.role]} text-2xl shadow`}>
-                  {user.emoji}
+                <div className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${ROLE_BG[user.role]} overflow-hidden shadow`}>
+                  <Image src={user.avatar} alt={user.name} fill className="object-cover" />
                 </div>
                 <div className="text-left">
                   <p className="font-bold text-[var(--text-primary)] text-lg">{user.name}</p>

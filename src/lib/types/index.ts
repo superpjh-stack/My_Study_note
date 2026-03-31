@@ -2,7 +2,9 @@
 
 export type GradeLevel =
   | 'middle-1' | 'middle-2' | 'middle-3'
-  | 'high-1' | 'high-2' | 'high-3';
+  | 'high-1' | 'high-2' | 'high-3'
+  | 'univ-1' | 'univ-2' | 'univ-3' | 'univ-4'
+  | 'graduate';
 
 export type Semester = '1' | '2';
 

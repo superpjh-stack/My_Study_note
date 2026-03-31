@@ -101,6 +101,11 @@ export const GRADE_LABELS: Record<GradeLevel, string> = {
   'high-1': '고등학교 1학년',
   'high-2': '고등학교 2학년',
   'high-3': '고등학교 3학년',
+  'univ-1':  '대학교 1학년',
+  'univ-2':  '대학교 2학년',
+  'univ-3':  '대학교 3학년',
+  'univ-4':  '대학교 4학년',
+  'graduate': '대학원생',
 };
 
 // === Milestone Types ===

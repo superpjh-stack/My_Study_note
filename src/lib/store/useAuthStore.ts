@@ -9,14 +9,15 @@ export interface AuthUser {
   name: string;
   role: UserRole;
   emoji: string;
+  avatar: string; // path under /public, e.g. "/avatars/joeun.svg"
 }
 
 export const QUICK_LOGIN_USERS: AuthUser[] = [
-  { name: 'Joeun',   role: 'student-high',   emoji: '🎓' },
-  { name: 'Junho',   role: 'student-middle',  emoji: '📚' },
-  { name: 'Gerardo', role: 'student-high',    emoji: '🌟' },
-  { name: 'Grace',   role: 'student-high',    emoji: '🌸' },
-  { name: 'admin',   role: 'admin',           emoji: '🛠️' },
+  { name: 'Joeun',   role: 'student-high',   emoji: '🎓', avatar: '/avatars/joeun.svg'   },
+  { name: 'Junho',   role: 'student-middle',  emoji: '📚', avatar: '/avatars/junho.svg'   },
+  { name: 'Gerardo', role: 'student-high',    emoji: '🌟', avatar: '/avatars/gerardo.svg' },
+  { name: 'Grace',   role: 'student-high',    emoji: '🌸', avatar: '/avatars/grace.svg'   },
+  { name: 'admin',   role: 'admin',           emoji: '🛠️', avatar: '/avatars/admin.svg'   },
 ];
 
 interface AuthState {

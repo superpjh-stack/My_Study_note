@@ -12,9 +12,11 @@ export interface AuthUser {
 }
 
 export const QUICK_LOGIN_USERS: AuthUser[] = [
-  { name: 'Joeun', role: 'student-high', emoji: '🎓' },
-  { name: 'Junho', role: 'student-middle', emoji: '📚' },
-  { name: 'admin', role: 'admin', emoji: '🛠️' },
+  { name: 'Joeun',   role: 'student-high',   emoji: '🎓' },
+  { name: 'Junho',   role: 'student-middle',  emoji: '📚' },
+  { name: 'Gerardo', role: 'student-high',    emoji: '🌟' },
+  { name: 'Grace',   role: 'student-high',    emoji: '🌸' },
+  { name: 'admin',   role: 'admin',           emoji: '🛠️' },
 ];
 
 interface AuthState {

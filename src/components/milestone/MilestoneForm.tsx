@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useUIStore } from '@/lib/store/useUIStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useMilestoneStore } from '@/lib/store/useMilestoneStore';
@@ -22,6 +23,12 @@ export function MilestoneForm({ onClose }: MilestoneFormProps) {
 
   const { addMilestone } = useMilestoneStore();
   const subjects = useSubjectStore((s) => s.subjects);
+  const { openSheet, closeSheet } = useUIStore();
+
+  useEffect(() => {
+    openSheet();
+    return () => closeSheet();
+  }, [openSheet, closeSheet]);
 
   const handleSubmit = () => {
     if (!title || !dueDate) return;
@@ -38,7 +45,7 @@ export function MilestoneForm({ onClose }: MilestoneFormProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={onClose}>
       <div
-        className="w-full max-w-lg rounded-t-2xl bg-[var(--bg-primary)] p-5 pb-8 max-h-[80vh] overflow-y-auto"
+        className="w-full max-w-lg rounded-t-2xl bg-[var(--bg-primary)] p-5 pb-10 max-h-[92vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
